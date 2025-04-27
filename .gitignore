@@ -1,0 +1,9 @@
+*data
+
+env/
+
+*.png
+*.mat
+*.log
+
+.DS_Store
