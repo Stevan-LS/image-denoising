@@ -1,51 +1,65 @@
-# Image Denoising with Blind2Unblind
+# Blind2Unblind: Self-Supervised Image Denoising
 
-This repository contains an implementation of the Blind2Unblind image denoising framework, adapted from the paper [Blind2Unblind: Self-Supervised Image Denoising with Visible Blind Spots](https://arxiv.org/abs/2203.06967) (CVPR 2022).
+This repository provides an implementation of the Blind2Unblind image denoising framework, based on the paper [Blind2Unblind: Self-Supervised Image Denoising with Visible Blind Spots](https://arxiv.org/abs/2203.06967) (CVPR 2022).
 
-## Project Overview
+## Overview
+Blind2Unblind is a self-supervised image denoising method that leverages visible blind spots and masking strategies to train deep networks without requiring clean/noisy image pairs. This approach is especially effective for scientific and microscopy imaging, where clean data is scarce.
 
-The implementation focuses on self-supervised image denoising techniques, particularly using the Blind2Unblind method which employs a novel approach with visible blind spots. The code allows for training and testing on various datasets including standard benchmarks and custom fluorescence microscopy data.
+## Features
+- **Self-supervised learning**: No need for paired clean/noisy images
+- **Multiple noise types**: Gaussian, Poisson, and real-world noise
+- **Microscopy support**: Special handling for fluorescence microscopy datasets (FMDD)
+- **Flexible UNet-based architecture**
+- **Easy extension to new datasets**
 
 ## Repository Structure
+- Literature review: [`méthodes/`](./méthodes)
+- Blind2Unblind implementation and scripts: [`Blind2Unblind/`](./Blind2Unblind)
+- Example tests and experiments: [`test/`](./test)
 
-This repository contains:
+## Quickstart
 
-- Our literature review of denoising methods in the [méthodes](./méthodes) directory
-- Implementation and usage instructions for our chosen denoising method in [Blind2Unblind](./Blind2Unblind)
+### 1. Installation
 
-## Key Features
+```bash
+cd Blind2Unblind
+pip install -r requirements.txt
+```
 
-- **Self-supervised learning**: Train denoising models without paired clean/noisy images
-- **Multiple noise types support**: Gaussian, Poisson, and real-world noise handling
-- **Microscopy image denoising**: Special implementation for fluorescence microscopy datasets (FMDD)
-- **Flexible architecture**: UNet-based architecture that can be adapted to different image types
+### 2. Prepare Data
+- See [Blind2Unblind/README.md](./Blind2Unblind/README.md#data-preparation) for dataset preparation scripts and folder structure.
 
-## Methods
+### 3. Download Pretrained Models (Optional)
+- Pretrained models are available [here](https://drive.google.com/drive/folders/1ruA6-SN1cyf30-GHS8w2YD1FG-0A-k7h?usp=sharing). Place them in `Blind2Unblind/pretrained_models/`.
 
-The Blind2Unblind approach works by:
+### 4. Training Example
+```bash
+python Blind2Unblind/train_b2u.py --noisetype gauss25 --data_dir ./Blind2Unblind/data/train/Imagenet_val --val_dirs ./Blind2Unblind/data/validation --save_model_path ./experiments/results --log_name b2u_unet_gauss25 --Lambda1 1.0 --Lambda2 2.0 --increase_ratio 20.0
+```
 
-1. Creating artificial blind spots in noisy images
-2. Training a network to reconstruct these blind spots
-3. Leveraging self-supervision to learn denoising without clean targets
-4. Using a specialized masking strategy with interpolation for optimal reconstruction
+### 5. Testing Example
+```bash
+python Blind2Unblind/test_b2u.py --noisetype gauss25 --checkpoint ./Blind2Unblind/pretrained_models/g25_112f20_beta19.7.pth --test_dirs ./Blind2Unblind/data/validation --save_test_path ./test --log_name b2u_unet_g25 --beta 19.7
+```
 
-## Datasets
+For more training and testing options (including SIDD and FMDD datasets), see [Blind2Unblind/README.md](./Blind2Unblind/README.md#train) and [#test].
 
-The implementation supports several datasets:
-- General image datasets: Kodak24, BSD300, Set14, Urban100, BSD100
-- Microscopy datasets: Confocal_FISH, Confocal_MICE, TwoPhoton_MICE
-- Smartphone Image Denoising Dataset (SIDD)
-- Custom datasets can be easily integrated
-
+## Supported Datasets
+- General: Kodak24, BSD300, Set14, Urban100, BSD100
+- Microscopy: Confocal_FISH, Confocal_MICE, TwoPhoton_MICE
+- Smartphone: SIDD
+- Custom datasets: Easily integrated (see [Blind2Unblind/README.md](./Blind2Unblind/README.md#test-a-model-on-new-data))
 
 ## Results
-The model demonstrates strong performance on various benchmark datasets and can effectively denoise fluorescence microscopy images without requiring clean training data, which is particularly valuable for scientific imaging applications.
+Blind2Unblind achieves strong denoising performance on standard benchmarks and excels in microscopy image denoising without clean training data.
 
 ## Extending to New Data
-The repository includes detailed instructions for:
+- Add your own datasets for validation or training by following the instructions in [Blind2Unblind/README.md](./Blind2Unblind/README.md#test-a-model-on-new-data) and [#train-a-model-on-new-data].
 
-Adding custom validation datasets
-Training new models on custom data
-Testing pretrained models on new datasets
 
-Stevan Le Stanc
+## Acknowledgments
+- This repository adapts and extends the official Blind2Unblind implementation.
+- For detailed usage, advanced options, and troubleshooting, see [Blind2Unblind/README.md](./Blind2Unblind/README.md).
+
+---
+**Author:** Stevan Le Stanc
